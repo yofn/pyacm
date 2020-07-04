@@ -3,7 +3,7 @@
 # 2020暑期排位5K_生日谜题
 # https://codeforces.com/group/H9K9zY8tcT/contest/286081/problem/K
 # bit-operation? 不适合python? 也能做
-# 还能用bfs来做!?
+# 还能用dfs来做!?
 
 t = input()
 l = list(map(int,input().split())) 
