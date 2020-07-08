@@ -2,6 +2,7 @@
 
 # https://codeforces.com/problemset/problem/919/B
 # 第一个正经的DP?
+# 也可以直接构造出来??
 
 k = int(input())
 
