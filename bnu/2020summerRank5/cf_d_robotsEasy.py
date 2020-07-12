@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # 2020暑期排位5D_robotEasy
+# https://codeforces.com/group/H9K9zY8tcT/contest/286081/problem/D
 # https://www.youtube.com/watch?v=KiCBXu4P-2Y
+# 这是一个(迭代式)BFS/bfs的例子
 import queue
 
 maxR,maxC   = 12,12
