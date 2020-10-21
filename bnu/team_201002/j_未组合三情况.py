@@ -28,35 +28,45 @@ def makeD(l):
     return [[g[0],g[1],log2i(g[1])+1] for g in d]
 
 def f(l):
-    inf   = 9e999
     d     = makeD(l)
     n     = len(d)
     p     = n-1     # points to the REAL runner-up group
     rr    = 0       # count of ROUND
     while True:
-        r     = d[p]    # runner-up; r[0]=dist2J, r[1]=GroupSize, r[2]=@nRound
+        r     = d[p]    # runner-up
         if r[0]==0 and r[1]>1:
             return rr
-        s2j   = r[2]*(r[0]//(r[2]-1)) if r[2]>1 else inf
-        s2m   = (d[p-1][0]-r[0])*r[2] if p>0 else inf
-        case1 = (s2m<=s2j)                          # safely MERGE 2nd and 3rd places (aka p,p-1)
-        case2 = (not case1) and (s2j > 0)           # safely MOVE  2nd without merge happens
-        case3 = (not case1) and (not case2)         # baby stepping, which involves SPLITTING
-        ss    = s2m if case1 else (s2j if case2 else 1)
+        if p==0:
+
+        '''
+        OPERATIONS: update; split; merge 
+        CASE 1: SINGLE runner-up        => merge in big step
+        CASE 2: GROUP  runner-up FAST   => if far away from Julia
+        CASE 3: GROUP  runner-up SLOW   => basic stepping
+        '''
+        case1 = (r[1]==1)
+        case2 = (not case1) and r[0]>(r[2]-1)       #FAST if r[0] would be >=0
+        case3 = (not case1) and (not case2)
+        ss    = (d[p-1][0]-r[0]) if case1 else (r[2] if case2 else 1) #ss = STEP
         rr   += ss
-        # COMMON to all cases!
+        # print(d[:p+1])
+        # 1. update other groups
         for i in range(p):
             d[i][0] -= ss
-        if case1:
-            p       -= 1     # MERGE two groups as new runner-up group
-            d[p][1] += r[1]
-            d[p][2]  = log2i(d[p][1])+1
+        # 2. update RUNNER-up in FAST-mode; split if in SLOW-mode!
         if case2:
-            r[0]    -= ss-(ss//r[2])
+            r[0] -= ss-1
         if case3:
             ng    = [r[0]-1,r[1]//2,r[2]-1] 
             r[1] -= ng[1]
             r[2] -= 1
+        # 3. Merge
+        if p>0 and r[0] == d[p-1][0]:
+            p       -= 1     # MERGE two groups as new runner-up group
+            d[p][1] += r[1]
+            d[p][2]  = log2i(d[p][1])+1
+        # 4. append new runner-up if in SLOW mode!
+        if case3 and ng[1]>0:
             if p<n-1:
                 d[p+1] = ng
             else:
