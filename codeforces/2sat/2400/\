@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define N 1000006
+#define bug(x) cout<<#x<<" is "<<x<<endl
+
+int p[N],head[N],last[N],e;
+int vis[N],dfn[N],low[N],sta[N];cnt[N],color[N];
+int tot,top,dfncnt;
+int n,ans;
+bool vis[N];
+
+void add(int x,int y){
+  head[++e]=y;  //e admits y as its head(destination)
+  last[e]=p[x]; //e admits x's old 1st edge as next edge.
+  p[x]=e;       //x admits e as 1st edge;
+}
+
+void tarjan(int x){
+  int y;
+  v[x]=true; dfn[x]=low[x]=++dfncnt; sta[++top]=x;
+  for(int j=p[x]; j; j=last[j])
+    if (!dfn[y=head[j]]){
+      tarjan(y);
+      low[x]=min(low[x],low[y]);
+    }
+    else if (v[y])
+      low[x]=min(low[x],dfn[y]);
+  if (low[x]==dfn[x])
+  {
+    ++tot;
+    do
+    {
+      y=stack[size−−];
+      cnt[color[y]=tot]++;
+      v[y]=false;
+    }
+    while(y!=x);
+  }
+}
+
+bool solve(){
+  int  n,m,nn,x,y,xx,yy,np,nc;
+  cin >> n >> m; nn=n<<1;
+  for(int i=0;i<nn;++i) e[i].clear();
+  for(int i=0;i<m; ++i){
+    cin>>x>>y; xx=(x-1)<<1; yy=(y-1)<<1;
+    e[xx  ].push_back(yy  );
+    e[yy^1].push_back(xx^1);
+  }//0=person, 1=cat
+  //dfs solve 2-sat 
+  memset(match,false,sizeof(match));
+  for(int i=0;i<nn;i+=2) if(!match[i] && !match[i^1]){ //<=!
+    top = 0;
+    if(!dfs(i)){
+      for(int j=0;j<top;++j)match[sta[j]]=false;
+      if(!dfs(i^1)) return false;
+    }
+  }
+  np = 0;
+  for(int i=0;i<nn;i+=2) if(match[i]) ++np;
+  bug(np);
+  if(np==0||np==n) return false;
+  nc = n-np;
+  cout << "Yes\n" << np << ' ' << nc << endl;
+  for(int i=0;i<nn;i+=2) if(match[i<<1]) cout << i+1 << (--np?' ':'\n');
+  for(int i=1;i<nn;i+=2) if(match[i<<1]) cout << i+1 << (--nc?' ':'\n');
+  return true;
+}
+
+int main(){
+  int tc; scanf("%d",&tc);
+  while(tc--) if(!solve()) cout<<"No\n";
+}
+
+/*
+int main(){
+  scanf("%d",&n);
+  for(int i=1; i<=n; i++){int x; scanf("%d",&x); add(i,x);}
+  memset(dfn,0,sizeof(dfn));
+  memset(low,0,sizeof(low));
+  memset(v,0,sizeof(v));
+  size=tot=0;
+  for(int i=1; i<=n; i++) if(!dfn[i]) tarjan(i);
+  ans=n;
+  for(int i=1; i<=tot; i++) if(cnt[i]>1) ans=min(ans,cnt[i]);
+  cout<<ans<<endl;
+}
+*/
